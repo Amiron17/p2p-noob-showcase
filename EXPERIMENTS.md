@@ -198,6 +198,91 @@ The affected API key was also rotated.
 
 ---
 
+
+## 7. Data-driven V1 quality gate
+
+### Question
+
+The initial V1 merchant gate used:
+
+```text
+recent orders >= 500
+completion rate >= 98%
+```
+
+Those values were a reasonable starting heuristic, but they were not derived from observed market data.
+
+Could the gate be improved without sacrificing candidate coverage or admitting an unnecessarily weak merchant segment?
+
+### Test
+
+After V2 had accumulated enough history, multiple combinations of `recent_order_num` and `recent_execute_rate` were compared.
+
+The main dense comparison set used:
+
+```text
+237 market snapshots
+24,699 relevant observations
+10,000 RUB user amount
+bank transfer
+baseline gate: 500 / 98
+```
+
+The analysis included:
+
+- market distributions of recent order count and completion rate;
+- coverage under different thresholds;
+- a coarse grid of 40 threshold combinations;
+- a bank-transfer relevance check;
+- observed merchant persistence/stability by activity band;
+- a finer comparison across the 300–500 recent-order range.
+
+### Finding
+
+The original `500 / 98` rule was driven mostly by the `500 recent orders` boundary. Adding `98% completion` after that threshold removed almost no additional observations.
+
+The strongest practical result was the comparison between the original baseline and `400 / 99`.
+
+Across the dense sample:
+
+```text
+500 / 98 average best price: 86.2162 RUB/USDT
+400 / 99 average best price: 84.9991 RUB/USDT
+average price difference:   approximately -1.409%
+candidate coverage:          100%
+```
+
+Thresholds below 400 did not produce an additional best-price improvement in the tested sample, while stricter order-count thresholds increasingly reduced useful market coverage or worsened the available best price.
+
+A `100% completion` requirement also reduced the candidate set substantially without a corresponding price benefit.
+
+### Design decision
+
+The V1 product gate was changed to:
+
+```text
+recent orders >= 400
+completion rate >= 99%
+```
+
+The important point is not the exact numbers by themselves, but how they were chosen:
+
+```text
+initial heuristic
+→ collect historical market data
+→ compare threshold combinations
+→ measure price / coverage trade-offs
+→ update the product rule
+```
+
+### Limitation
+
+This result is an **empirical market filter**, not proof that a merchant is safe.
+
+The historical dataset contains listings and merchant statistics, but not verified transaction outcomes, complaints, or fraud labels. The `400 / 99` rule should therefore be interpreted as a data-supported quality gate for the observed RUB → USDT market window, not as a universal merchant-risk guarantee.
+
+---
+
 ## Summary
 
 The main development pattern throughout the project has been:
