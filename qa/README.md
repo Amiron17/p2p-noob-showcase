@@ -2,7 +2,6 @@
 
 This folder contains the public QA documentation for **P2P Market Monitor / P2P NOOB**.
 
-**QA iteration date:** 2026-09-19  
 **Iteration status:** COMPLETED  
 **Retest:** PASS  
 **Targeted regression:** PASS  
