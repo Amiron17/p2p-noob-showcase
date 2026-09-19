@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>P2P NOOB</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+    <main class="page">
+        <header class="brand">
+            P2P NOOB
+        </header>
+
+        <form method="POST" class="workspace">
+            <section class="column optional-column">
+                <h2>OPTIONAL:</h2>
+
+                <div class="field">
+                    <label for="amount">amount, RUB:</label>
+                    <input
+                        id="amount"
+                        type="number"
+                        name="amount"
+                        min="1"
+                        step="1"
+                        placeholder="any"
+                        value="{{ amount }}"
+                        {% if monitor_running %}disabled{% endif %}
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="payment_method">payment method:</label>
+                    <select
+                        id="payment_method"
+                        name="payment_method"
+                        {% if monitor_running %}disabled{% endif %}
+                    >
+                        <option value="">any</option>
+
+                        <option
+                            value="bank_transfer"
+                            {% if payment_method == 'bank_transfer' %}selected{% endif %}
+                        >
+                            bank transfer
+                        </option>
+
+                        <option
+                            value="cash_deposit_to_bank"
+                            {% if payment_method == 'cash_deposit_to_bank' %}selected{% endif %}
+                        >
+                            cash deposit to bank
+                        </option>
+
+                        <option
+                            value="mobile_top_up"
+                            {% if payment_method == 'mobile_top_up' %}selected{% endif %}
+                        >
+                            mobile top up
+                        </option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="kyc_country">KYC region:</label>
+                    <select
+                        id="kyc_country"
+                        name="kyc_country"
+                        {% if monitor_running %}disabled{% endif %}
+                    >
+                        <option value="">not specified</option>
+
+                        <option
+                            value="RUS"
+                            {% if user_profile.kyc_country == 'RUS' %}selected{% endif %}
+                        >
+                            Russia
+                        </option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="orders_30d">P2P orders / 30d:</label>
+                    <input
+                        id="orders_30d"
+                        type="number"
+                        name="orders_30d"
+                        min="0"
+                        placeholder="not specified"
+                        value="{% if user_profile.orders_30d is not none %}{{ user_profile.orders_30d }}{% endif %}"
+                        {% if monitor_running %}disabled{% endif %}
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="target_profit">target profit, %:</label>
+                    <input
+                        id="target_profit"
+                        type="number"
+                        name="target_profit"
+                        step="0.01"
+                        placeholder="any"
+                        value="{% if target_profit is not none %}{% if target_profit == 0 %}0{% else %}{{ target_profit }}{% endif %}{% endif %}"
+                        {% if monitor_running %}disabled{% endif %}
+                    >
+                </div>
+
+                <p class="hint">
+                    Leave anything blank to search without that filter.
+                </p>
+            </section>
+
+            <section class="column search-column">
+                <h2>SEARCH:</h2>
+
+                <div class="search-actions">
+                    {% if monitor_running %}
+                        <button
+                            id="monitor-control-button"
+                            type="submit"
+                            name="search_action"
+                            value="stop_monitor"
+                            class="search-button"
+                            {% if monitor_stopping %}disabled{% endif %}
+                        >
+                            {% if monitor_stopping %}
+                                STOPPING...
+                            {% else %}
+                                SEARCHING... / STOP
+                            {% endif %}
+                        </button>
+                    {% else %}
+                        <button
+                            id="monitor-control-button"
+                            type="submit"
+                            name="search_action"
+                            value="start_monitor"
+                            class="search-button"
+                        >
+                            START
+                        </button>
+                    {% endif %}
+                </div>
+
+                {% if monitor_running %}
+                    <p class="notice">
+                        {% if monitor_stopping %}
+                            STOPPING MONITORING —
+                        {% else %}
+                            MONITORING ACTIVE —
+                        {% endif %}
+                        <span
+                            id="monitor-timer"
+                            data-seconds="{{ monitor_elapsed_seconds }}"
+                        >
+                            {{ monitor_elapsed_seconds }} sec
+                        </span>
+                    </p>
+                {% elif notice %}
+                    <p class="notice">
+                        {{ notice }}
+                    </p>
+                {% endif %}
+            </section>
+
+            <section class="column results-column">
+                <h2>RESULTS:</h2>
+
+                {% if monitor_running %}
+                    <div
+                        id="monitor-result-box"
+                        class="result-box"
+                        style="display: none;"
+                    >
+                        <div class="result-row">
+                            <span>merchant</span>
+                            <strong id="monitor-merchant"></strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>P2P</span>
+                            <strong id="monitor-price"></strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>USD/RUB</span>
+                            <strong id="monitor-reference"></strong>
+                        </div>
+
+                        <div class="result-row edge-row">
+                            <span>edge</span>
+                            <strong id="monitor-edge"></strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>target profit</span>
+                            <strong id="monitor-target"></strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>target met</span>
+                            <strong id="monitor-target-met"></strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>limits</span>
+                            <strong id="monitor-limits"></strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>orders</span>
+                            <strong id="monitor-orders"></strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>completion</span>
+                            <strong id="monitor-completion"></strong>
+                        </div>
+
+                        <a
+                            id="monitor-bybit-link"
+                            class="bybit-link"
+                            href="#"
+                            target="_blank"
+                        >
+                            OPEN ON BYBIT
+                        </a>
+                    </div>
+
+                    <p
+                        id="monitor-waiting"
+                        class="empty-result"
+                    >
+                        waiting for first monitor check_
+                    </p>
+
+                {% elif error %}
+                    <div class="result-box error-box">
+                        {{ error }}
+                    </div>
+
+                {% else %}
+                    <p class="empty-result">
+                        waiting for start_
+                    </p>
+                {% endif %}
+            </section>
+        </form>
+    </main>
+
+    <script>
+        const monitorTimer = document.getElementById('monitor-timer');
+        const monitorControlButton = document.getElementById(
+            'monitor-control-button'
+        );
+        const targetProfitInput = document.getElementById('target_profit');
+
+        function formatElapsedTime(totalSeconds) {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function formatTargetProfit(value) {
+            if (value === 0) {
+                return '0%';
+            }
+
+            return `${value > 0 ? '+' : ''}${value.toFixed(2)}%`;
+        }
+
+        function normalizeTargetProfit() {
+            if (!targetProfitInput || targetProfitInput.value === '') {
+                return;
+            }
+
+            const value = Number(targetProfitInput.value);
+
+            if (value === 0 || Object.is(value, -0)) {
+                targetProfitInput.value = '0';
+            }
+        }
+
+        if (targetProfitInput) {
+            targetProfitInput.addEventListener('keydown', (event) => {
+                if (event.key === '+') {
+                    event.preventDefault();
+                }
+            });
+
+            targetProfitInput.addEventListener('beforeinput', (event) => {
+                if (event.data && event.data.includes('+')) {
+                    event.preventDefault();
+                }
+            });
+
+            targetProfitInput.addEventListener('paste', (event) => {
+                const text = event.clipboardData.getData('text');
+
+                if (text.includes('+')) {
+                    event.preventDefault();
+                }
+            });
+
+            targetProfitInput.addEventListener('change', normalizeTargetProfit);
+            targetProfitInput.addEventListener('blur', normalizeTargetProfit);
+        }
+
+        if (monitorTimer) {
+            monitorTimer.textContent = formatElapsedTime(
+                Number(monitorTimer.dataset.seconds)
+            );
+        }
+
+        const monitorResultBox = document.getElementById(
+            'monitor-result-box'
+        );
+
+        async function refreshMonitorResult() {
+            if (!monitorResultBox) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/monitor-status');
+                const data = await response.json();
+
+                if (!data.running) {
+                    window.location.reload();
+                    return;
+                }
+
+                if (monitorControlButton) {
+                    if (data.stopping) {
+                        monitorControlButton.textContent = 'STOPPING...';
+                        monitorControlButton.disabled = true;
+                    } else {
+                        monitorControlButton.textContent =
+                            'SEARCHING... / STOP';
+                    }
+                }
+
+                if (monitorTimer) {
+                    monitorTimer.textContent = formatElapsedTime(
+                        data.elapsed_seconds
+                    );
+                }
+
+                if (!data.latest) {
+                    return;
+                }
+
+                document.getElementById(
+                    'monitor-waiting'
+                ).style.display = 'none';
+
+                monitorResultBox.style.display = 'block';
+
+                document.getElementById(
+                    'monitor-merchant'
+                ).textContent = data.latest.merchant;
+
+                document.getElementById(
+                    'monitor-price'
+                ).textContent =
+                    `${data.latest.price.toFixed(2)} RUB`;
+
+                document.getElementById(
+                    'monitor-reference'
+                ).textContent =
+                    data.latest.reference_rate.toFixed(5);
+
+                document.getElementById(
+                    'monitor-edge'
+                ).textContent =
+                    `${data.latest.edge >= 0 ? '+' : ''}`
+                    + `${data.latest.edge.toFixed(3)}%`;
+
+                document.getElementById(
+                    'monitor-target'
+                ).textContent =
+                    formatTargetProfit(data.latest.target_profit);
+
+                document.getElementById(
+                    'monitor-target-met'
+                ).textContent =
+                    data.latest.target_met ? 'YES' : 'NO';
+
+                document.getElementById(
+                    'monitor-limits'
+                ).textContent =
+                    `${Math.round(data.latest.min_amount)}`
+                    + ' – '
+                    + `${Math.round(data.latest.max_amount)}`;
+
+                document.getElementById(
+                    'monitor-orders'
+                ).textContent =
+                    data.latest.recent_order_num;
+
+                document.getElementById(
+                    'monitor-completion'
+                ).textContent =
+                    `${data.latest.recent_execute_rate}%`;
+
+                document.getElementById(
+                    'monitor-bybit-link'
+                ).href = data.latest.merchant_url;
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        if (monitorResultBox) {
+            refreshMonitorResult();
+            setInterval(refreshMonitorResult, 1000);
+        }
+    </script>
+
+</body>
+
+</html>

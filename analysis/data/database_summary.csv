@@ -1,0 +1,2 @@
+"collection_started_at","collection_finished_at","snapshots_collected","orders_stored","distinct_merchants","avg_orders_per_snapshot","min_orders_per_snapshot","max_orders_per_snapshot","median_collection_seconds","p95_collection_seconds","min_collection_seconds","max_collection_seconds"
+"2026-09-12 16:06:36.045696+04","2026-09-19 14:12:27.896516+04",2376,581962,887,244.93,100,388,28.20,39.83,9.75,43424.65
