@@ -11,7 +11,7 @@ This public section exposes only anonymized aggregate/history exports and charts
 | Snapshots collected | 2,376 |
 | Market-order rows stored | 581,962 |
 | Distinct merchants observed | 887 |
-| Average orders per snapshot | 244.93 |
+| Average orders per snapshot | 244 |
 | Snapshots with USD/RUB reference | 2,132 / 2,376 (89.7%) |
 
 
