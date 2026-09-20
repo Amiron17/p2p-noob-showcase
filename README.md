@@ -58,7 +58,7 @@ Input-validation and UI issues found during testing were fixed and retested.
 
 One major issue remains open: a rare historical collection cycle stayed active for roughly 12 hours after a Bybit timeout and later saved the delayed snapshot. The issue was not reliably reproduced by manual network-loss experiments and has a separate diagnostic research plan.
 
-Start with [`qa/README.md`](qa/README.md) or the [`final QA report`](qa/reports/final_qa_report.md).
+See [`qa/README.md`](qa/README.md) for the testing approach, results, and current defect status.
 
 ## Repository contents
 
@@ -74,12 +74,10 @@ Start with [`qa/README.md`](qa/README.md) or the [`final QA report`](qa/reports/
 │   └── data/
 ├── qa/
 │   ├── README.md
-│   ├── reports/
-│   ├── planning/
-│   ├── results/
-│   ├── defects/
-│   ├── research/
+│   ├── test_plan.md
+│   ├── test_results.md
 │   └── evidence/
+│       └── long_collection_cycle_terminal.jpg
 ├── templates/
 │   └── index.html
 └── static/
