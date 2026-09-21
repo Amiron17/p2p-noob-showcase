@@ -17,6 +17,8 @@ The main implemented user flows remained functional after the selected fixes. Te
 - [`test_plan.md`](test_plan.md) — testing scope, approach, environment, and completion criteria.
 - [`test_results.md`](test_results.md) — consolidated smoke, functional, negative, exploratory, endurance, retest, and targeted-regression results.
 
+- [`defects.md`](defects.md) - structured defect records, available evidence and investigation limits.
+
 ## Note on historical findings
 
 Some test cases intentionally preserve the **pre-fix behavior** that originally failed. The results show both the original finding and the current post-fix status instead of rewriting earlier failures as if they never occurred.

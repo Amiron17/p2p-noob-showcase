@@ -56,7 +56,7 @@ The project has gone through structured QA covering smoke, functional, negative,
 
 Input-validation and UI issues found during testing were fixed and retested.
 
-One major issue remains open: a rare historical collection cycle stayed active for roughly 12 hours after a Bybit timeout and later saved the delayed snapshot. The issue was not reliably reproduced by manual network-loss experiments and has a separate diagnostic research plan.
+One major issue remains open: a rare historical collection cycle had a roughly 12-hour recorded wall-clock interval, included a Bybit timeout, and later saved the delayed snapshot. The cause and location of the delay remain unconfirmed. The issue was not reliably reproduced by manual network-loss experiments and has a separate diagnostic research plan.
 
 See [`qa/README.md`](qa/README.md) for the testing approach, results, and current defect status.
 
@@ -75,6 +75,7 @@ See [`qa/README.md`](qa/README.md) for the testing approach, results, and curren
 ├── qa/
 │   ├── README.md
 │   ├── test_plan.md
+│   ├── defects.md
 │   ├── test_results.md
 │   └── evidence/
 │       └── long_collection_cycle_terminal.jpg

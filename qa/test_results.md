@@ -6,6 +6,14 @@ The main live-monitoring and historical-collection flows passed smoke and functi
 
 One major historical-collection defect remains open and under continued endurance testing: **BUG-001**.
 
+## Evidence and reporting scope
+
+This report summarizes previously performed manual checks. This documentation review did not execute new tests or verify a new build. PASS and FIXED / RETESTED labels below preserve the original recorded outcomes; they are not new certification results.
+
+The original notes do not retain an exact build/commit, browser and OS versions, or detailed inputs for every check. Grouped PASS summaries describe the exercised scope, not exhaustive coverage. The 529-cycle follow-up is recorded in the original report; its complete per-cycle log is not included in this showcase.
+
+See [defects.md](defects.md) for structured incident and historical defect records, including evidence limitations.
+
 ## 1. Smoke and functional checks
 
 <table>
@@ -124,7 +132,7 @@ Functional testing covered normal implemented behavior across both flows, includ
 </tr>
 <tr>
   <td><code>-0</code></td>
-  <td>FAIL</td>
+  <td>Reported as FAIL; the original note does not specify the exact incorrect display or behavior</td>
   <td>🟢 <strong>FIXED / RETESTED</strong></td>
 </tr>
 <tr>
@@ -134,8 +142,8 @@ Functional testing covered normal implemented behavior across both flows, includ
 </tr>
 <tr>
   <td>Explicit leading <code>+</code></td>
-  <td>allowed</td>
-  <td>🟢 <strong>FIXED / RETESTED</strong></td>
+  <td>Accepted a leading +; the original note does not specify the required normalization rule, so acceptance alone does not establish a defect</td>
+  <td>Change recorded as FIXED / RETESTED; original expected behavior not retained</td>
 </tr>
 <tr>
   <td>Very large values</td>
@@ -193,8 +201,8 @@ Functional testing covered normal implemented behavior across both flows, includ
 **Priority:** High  
 **Component:** Historical market collector  
 **Detected by:** Endurance testing  
-**Description:** A collection cycle started normally but encountered a Bybit request timeout during pagination. Instead of failing within the expected retry/timeout window, the cycle remained active for roughly **12 hours** and eventually saved the delayed snapshot. The next collection cycle started normally, so the collector recovered without a manual restart.  
-**Observed incident data:** Snapshot - `2361`; Orders saved - `299`; Cycle duration - `43424.824s` (~12h 4m).
+**Description:** A collection cycle started normally but encountered a Bybit request timeout during pagination. The recorded wall-clock interval between collection start and finish was roughly **12 hours**, after which the snapshot was saved. The available logs do not identify where the delay occurred or establish that the process was executing continuously during this interval. The next collection cycle started normally, so the collector recovered without a manual restart.  
+**Observed incident data:** Snapshot - `2361`; Orders saved - `299`; Cycle duration from the exported database timestamps - `43424.645s` (~12h 4m). The earlier report quoted `43424.824s`; the small timing difference does not affect the finding.
 
 <p align="center">
   <img src="evidence/long_collection_cycle_terminal.jpg" alt="BUG-001 terminal evidence" width="620">
@@ -211,7 +219,9 @@ Functional testing covered normal implemented behavior across both flows, includ
 - connectivity restored before timeout — **NOT REPRODUCED**;
 - later endurance run of 529 consecutive collection cycles — **NOT REPRODUCED**.
 
-**Next step:** For now, the defect remains under continued endurance testing. Future runs will include timestamp logging around the main collection stages and additional error logging so that, if the issue appears again, the exact point of the long delay can be identified.
+**Cause:** Unconfirmed. The timeout precedes the saved snapshot in the terminal output, but the evidence does not establish that the request itself consumed the full interval.
+
+**Next diagnostic steps (planned, not executed in this documentation review):** Add timestamped start/end logs for requests, retry waits, reference retrieval, database writes and cycle boundaries; record a monotonic elapsed-time measurement alongside wall-clock timestamps; inspect host sleep/resume events; capture the build and environment. This should distinguish a blocked stage from host suspension or another timing issue.
 
 ## 4. Fix verification
 

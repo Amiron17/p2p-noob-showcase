@@ -58,3 +58,12 @@ The QA cycle could be closed when:
 - nearby behavior around the fixes remained functional;
 - endurance results had been reviewed;
 - no known blocker prevented the main demo flow.
+
+
+## Reproducibility and next-run records
+
+The environment list above describes the original setup at a high level. Exact versions and build identifiers were not retained in the original notes. For future runs, record the commit/build, date, OS and browser versions, Python version, relevant service configuration and host power settings.
+
+Each new or repeated check should record preconditions, exact inputs/actions, expected behavior, actual behavior, outcome and evidence. This is a plan for subsequent testing, not a claim that the historical checks already contain these details.
+
+Closing a demo-focused QA iteration does not close known defects or certify production readiness. BUG-001 and requirement/UX gaps remain tracked separately.
