@@ -1,26 +1,71 @@
-# QA & Testing
+# P2P NOOB
 
-This folder contains the public QA documentation for **P2P NOOB**.
+## Product Overview
 
-The project was tested using smoke, functional, negative, exploratory, endurance, research, retest, and targeted regression activities.
+**Build:** v0.1.0
 
-Testing covered the live monitor, web interface, Telegram notifications, external reference handling, historical market collection, and PostgreSQL persistence.
+### Goal
 
-## QA outcome
+Find the most profitable Bybit P2P USDT/RUB order among offers that meet predefined merchant-quality criteria and implemented user search parameters.
 
-The main implemented user flows remained functional after the selected fixes. Testing identified several input-validation and UI-state issues, which were fixed and retested successfully.
+### Target User Flow
 
-**Known major open defect:** BUG-001 — rare abnormal historical collection cycle that can remain active for hours before saving a delayed snapshot.
+The user optionally provides:
 
-## Documents
+- desired exchange amount;
+- payment method;
+- target profit.
 
-- [`test_plan.md`](test_plan.md) — testing scope, approach, environment, and completion criteria.
-- [`test_results.md`](test_results.md) — consolidated smoke, functional, negative, exploratory, endurance, retest, and targeted-regression results.
+The system searches the current Bybit P2P market, applies the implemented search and quality filters, compares eligible offers with the cached USD/RUB reference rate, and returns the best matching order.
 
-- [`defects.md`](defects.md) - structured defect records, available evidence and investigation limits.
+## Current High-Level Architecture
 
-## Note on historical findings
+### Reference Rate Flow
 
-Some test cases intentionally preserve the **pre-fix behavior** that originally failed. The results show both the original finding and the current post-fix status instead of rewriting earlier failures as if they never occurred.
+→ retrieve current USD/RUB reference rate through Twelve Data API  
+→ create or update cached `.json` file with the latest valid rate.
 
-This QA iteration is focused on the implemented project flows and selected failure scenarios rather than exhaustive production certification.
+### Order Search Flow
+
+→ user search parameters through Web UI  
+→ Bybit P2P market monitoring  
+→ read cached USD/RUB reference rate  
+→ apply search and quality filters  
+→ select the best matching order  
+→ return result to the user.
+
+### Market History Flow
+
+→ scan Bybit P2P USDT/RUB market and collect market snapshot  
+→ read cached USD/RUB reference rate  
+→ store market data in PostgreSQL for historical analysis.
+
+## Coming Soon
+
+- Analysis of the selected order relative to the current market.
+- Merchant reliability analysis based on historical database records.
+- Additional user-specific eligibility checks.
+- User notifications for matching opportunities.
+
+## Environment
+
+- **OS:** Windows 10 x64
+- **Python:** 3.14.5
+- **Database:** PostgreSQL 18.6
+- **Browser:** Google Chrome 153.0.8010.53
+- **External services:** Bybit P2P web endpoint, Twelve Data API
+- **Runtime:** Local machine
+- **Network:** Internet connection required
+
+## QA Documentation
+
+- [`test_plan.md`](test_plan.md) — component functionality, key risks, planned checks, test types, and expected results.
+- [`test_results.md`](test_results.md) — executed checks, actual results, statuses, retest results, and targeted regression results.
+- [`bug_report.md`](bug_report.md) — significant confirmed defects and ongoing investigations, including severity, priority, impact, evidence, and reproduction history.
+- [`automation_candidates.md`](automation_candidates.md) — checks that are useful candidates for future automation.
+
+## Note on Historical Findings
+
+Some test cases intentionally preserve the original pre-fix behavior that failed during testing.
+
+Where a defect was fixed, the documentation keeps both the original finding and the current post-fix status instead of rewriting the earlier result as if the failure had never occurred.
