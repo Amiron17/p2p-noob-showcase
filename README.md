@@ -1,6 +1,6 @@
 # P2P NOOB
 
-**P2P NOOB** is a prototype decision-support service for monitoring **Bybit P2P RUB → USDT** offers. It continuously searches for suitable orders, applies merchant-quality and user-compatibility filters, compares prices with an external USD/RUB reference, and notifies the user when a configured target is reached.
+**P2P NOOB** is a prototype decision-support service for monitoring **Bybit P2P RUB → USDT** offers. It continuously searches for suitable orders, applies merchant-quality and implemented user search filters, compares prices with an external USD/RUB reference, and notifies the user when a configured target is reached.
 
 The service also accumulates historical market data in PostgreSQL and uses it to study merchant behavior and market conditions over time.
 
@@ -12,7 +12,7 @@ The core backend implementation is kept in a private repository. This public rep
 
 Attractive P2P offers can appear and disappear quickly, so finding one manually may require constantly refreshing the market throughout the day.
 
-At the same time, the cheapest available ad is not automatically the best choice. A useful order also has to satisfy merchant-quality rules, user-specific restrictions, amount and payment constraints, and a price condition relative to an external FX benchmark.
+At the same time, the cheapest available ad is not automatically the best choice. A useful order also has to satisfy merchant-quality rules, amount and payment constraints, and the configured target-profit condition relative to an external FX benchmark.
 
 P2P NOOB automates this routine by continuously monitoring the market and notifying the user when a suitable opportunity appears.
 
@@ -56,7 +56,7 @@ The project has gone through structured QA covering smoke, functional, negative,
 
 Input-validation and UI issues found during testing were fixed and retested.
 
-One major issue remains open: a rare historical collection cycle had a roughly 12-hour recorded wall-clock interval, included a Bybit timeout, and later saved the delayed snapshot. The cause and location of the delay remain unconfirmed. The issue was not reliably reproduced by manual network-loss experiments and has a separate diagnostic research plan.
+One major issue remains open: a rare historical collection cycle had a roughly 12-hour recorded wall-clock interval, included a Bybit timeout, and later saved the delayed snapshot. The cause and location of the delay remain unconfirmed. The issue was not reliably reproduced by manual network-loss experiments; its evidence and reproduction history are documented in the QA bug report.
 
 See [`qa/README.md`](qa/README.md) for the testing approach, results, and current defect status.
 
@@ -75,7 +75,7 @@ See [`qa/README.md`](qa/README.md) for the testing approach, results, and curren
 ├── qa/
 │   ├── README.md
 │   ├── test_plan.md
-│   ├── defects.md
+│   ├── bug_report.md
 │   ├── test_results.md
 │   └── evidence/
 │       └── long_collection_cycle_terminal.jpg
