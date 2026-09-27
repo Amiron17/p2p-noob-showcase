@@ -59,13 +59,7 @@ The system searches the current Bybit P2P market, applies the implemented search
 
 ## QA Documentation
 
-- [`test_plan.md`](test_plan.md) — component functionality, key risks, planned checks, test types, and expected results.
-- [`test_results.md`](test_results.md) — executed checks, actual results, statuses, retest results, and targeted regression results.
+- [`test_plan.md`](test_plan.md) — component functionality, key risks, planned checks, test types, expected results, and Full Regression entry criteria and suite.
+- [`test_results.md`](test_results.md) — executed checks, actual results, statuses, retest results, and targeted/full regression runs.
 - [`bug_report.md`](bug_report.md) — significant confirmed defects and ongoing investigations, including severity, priority, impact, evidence, and reproduction history.
 - [`automation_candidates.md`](automation_candidates.md) — checks that are useful candidates for future automation.
-
-## Note on Historical Findings
-
-Some test cases intentionally preserve the original pre-fix behavior that failed during testing.
-
-Where a defect was fixed, the documentation keeps both the original finding and the current post-fix status instead of rewriting the earlier result as if the failure had never occurred.

@@ -2,6 +2,14 @@
 
 The test plan follows the current high-level architecture. Each architecture step is treated as a separate testable component. For each component, the plan defines its functionality, key risks and planned checks.
 
+## Contents
+
+- [Smoke Testing](test_plan.md#smoke-testing)
+- [Block 1 — Reference Rate Flow](test_plan.md#block-1--reference-rate-flow)
+- [Block 2 — Order Search Flow](test_plan.md#block-2--order-search-flow)
+- [Block 3 — Market History Flow](test_plan.md#block-3--market-history-flow)
+- [Regression Testing](test_plan.md#regression-testing)
+
 ## Smoke Testing
 
 | ID | Test type | Check | Expected result |
@@ -341,3 +349,32 @@ The component stores the collected market snapshot and its associated data in Po
 | `b3c3r3t1` | Negative | Make PostgreSQL unavailable during persistence. | The database failure is reported and the cycle is not reported as successfully stored. |
 
 ---
+
+# Regression Testing
+
+## Full Regression Entry Criteria
+
+Full Regression can start when:
+
+- planned test execution for the current build is complete;
+- all implemented defect fixes have passed retesting;
+- required targeted regression runs have been completed;
+- no unresolved test failure blocks validation of the core product flows;
+- the build selected for regression is stable and no further changes are planned during the run.
+
+Open requirement or research items that do not block the core product flows do not prevent Full Regression from starting.
+
+## Full Regression Suite
+
+**Suite Status:** 🟡 IN PROGRESS · 🟢 COMPLETE
+
+**Current Status:** 🟡 IN PROGRESS
+
+The suite may be updated as testing progresses, new regression risks are identified or additional reusable test cases are added to the Test Plan.
+
+| Area | Included tests |
+|---|---|
+| Smoke | `smoke1`, `smoke2`, `smoke3` |
+| Reference Rate Flow | `b1c1t1`, `b1c1r3t1`, `b1c2t1`, `b1c2r2t1`, `b1c2r3t1` |
+| Order Search Flow | `b2c1t1`, `b2c1t2`, `b2c1t3`, `b2c1r1t2`, `b2c1r1t3`, `b2c1r1t4`, `b2c1r1t5`, `b2c1r2t1`, `b2c1r3t2`, `b2c1r3t3`, `b2c1r4t1`, `b2c1r4t2`, `b2c1r4t5`, `b2c2t1`, `b2c2r2t1`, `b2c3t1`, `b2c3r2t1`, `b2c3r3t1`, `b2c4t1`, `b2c4r1t1`, `b2c4r1t2`, `b2c4r1t3`, `b2c4r1t4`, `b2c4r2t1`, `b2c4r3t1`, `b2c5t1`, `b2c5r1t1`, `b2c5r2t1`, `b2c5r3t1`, `b2c6t1`, `b2c6r1t1`, `b2c6r3t1`, `b2c6r3t2` |
+| Market History Flow | `b3c1t1`, `b3c1r1t1`, `b3c1r2t1`, `b3c2t1`, `b3c2r2t1`, `b3c2r3t1`, `b3c3t1`, `b3c3r1t1`, `b3c3r1t2`, `b3c3r1t3` |
